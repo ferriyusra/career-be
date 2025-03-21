@@ -13,6 +13,9 @@ import {
 	createAuthController,
 	createAuthRepository,
 	createAuthService,
+	createCategoryController,
+	createCategoryRepository,
+	createCategoryService,
 	createMediaController,
 	createMediaService,
 } from './modules';
@@ -83,17 +86,23 @@ async function main() {
 	// Initialize dependencies
 	logger.info('Initializing dependencies');
 	const authRepository = createAuthRepository(db);
+	const categoryRepository = createCategoryRepository(db);
 
 	const authService = createAuthService(authRepository);
+	const categoryService = createCategoryService(categoryRepository);
 
 	const mediaService = createMediaService(new CloudinaryUploader());
 
 	const authController = createAuthController(authService);
+	const categoryController = createCategoryController(categoryService);
 	const mediaController = createMediaController(mediaService);
 
 	// Initialize routes
 	logger.info('Initializing routes');
-	app.use('/api', apiRouter(authController, mediaController));
+	app.use(
+		'/api',
+		apiRouter(authController, categoryController, mediaController)
+	);
 
 	// Initialize API documentation
 	// Uncomment the line below to enable API documentation

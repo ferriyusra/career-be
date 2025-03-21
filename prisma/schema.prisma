@@ -40,31 +40,39 @@ model users {
 }
 
 model candidate_education {
-  id      Int    @id @default(autoincrement())
-  user_id String @db.Uuid
-  level   String @db.Text
-  school  String @db.Text
-  major   String @db.Text
-  gpa     String @db.Text
+  id         Int      @id @default(autoincrement())
+  user_id    String   @db.Uuid
+  level      String   @db.Text
+  school     String   @db.Text
+  major      String   @db.Text
+  gpa        String   @db.Text
+  created_at DateTime @default(now()) @db.Timestamp()
+  updated_at DateTime @db.Timestamp()
 }
 
 model candidate_social {
-  id           Int     @id @default(autoincrement())
-  user_id      String  @db.Uuid
-  linkedin_url String? @db.Text
+  id           Int      @id @default(autoincrement())
+  user_id      String   @db.Uuid
+  linkedin_url String?  @db.Text
+  created_at   DateTime @default(now()) @db.Timestamp()
+  updated_at   DateTime @db.Timestamp()
 }
 
 model candidate_cv {
-  id      Int    @id @default(autoincrement())
-  user_id String @db.Uuid
-  cv_url  String @db.Text
+  id         Int      @id @default(autoincrement())
+  user_id    String   @db.Uuid
+  cv_url     String   @db.Text
+  created_at DateTime @default(now()) @db.Timestamp()
+  updated_at DateTime @db.Timestamp()
 }
 
 model job_categories {
-  id          Int     @id @default(autoincrement())
-  category_id String  @db.Uuid
-  name        String  @db.Text
-  is_active   Boolean @default(true)
+  id          Int      @id @default(autoincrement())
+  category_id String   @unique @db.Uuid
+  name        String   @db.Text
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.Timestamp()
+  updated_at  DateTime @db.Timestamp()
 }
 
 model jobs {

@@ -6,6 +6,9 @@ import { MediaController } from './controllers/media.controller';
 import { MediaService } from './media/media.service';
 import { CloudinaryUploader } from '../utils/uploader';
 import { PrismaClient } from '@prisma/client';
+import CategoryRepository from './category/repository';
+import CategoryService from './category/service';
+import CategoryController from './controllers/category.controller';
 
 function createAuthRepository(db: PrismaClient): AuthRepository {
 	return new AuthRepository(db);
@@ -17,6 +20,22 @@ function createAuthService(repository: AuthRepository): AuthService {
 
 function createAuthController(authService: AuthService): AuthController {
 	return new AuthController(authService);
+}
+
+function createCategoryRepository(db: PrismaClient): CategoryRepository {
+	return new CategoryRepository(db);
+}
+
+function createCategoryService(
+	repository: CategoryRepository
+): CategoryService {
+	return new CategoryService(repository);
+}
+
+function createCategoryController(
+	categoryService: CategoryService
+): CategoryController {
+	return new CategoryController(categoryService);
 }
 
 function createMediaService(cloudinary: CloudinaryUploader): MediaService {
@@ -31,6 +50,9 @@ export {
 	createAuthRepository,
 	createAuthService,
 	createAuthController,
+	createCategoryRepository,
+	createCategoryService,
+	createCategoryController,
 	createMediaService,
 	createMediaController,
 };

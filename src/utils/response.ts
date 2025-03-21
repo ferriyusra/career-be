@@ -1,3 +1,4 @@
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 import * as Yup from 'yup';
@@ -37,6 +38,16 @@ export default {
 				data: {
 					[`${error.path}`]: error.errors[0],
 				},
+			});
+		}
+
+		if (error instanceof PrismaClientKnownRequestError) {
+			return res.status(500).json({
+				meta: {
+					status: 500,
+					message: error.message,
+				},
+				data: error.name,
 			});
 		}
 
