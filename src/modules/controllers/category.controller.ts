@@ -3,6 +3,9 @@ import { Response } from 'express';
 import { IPaginationQuery, IReqUser } from '../../utils/interfaces';
 import CategoryService from '../category/service';
 import { categoryDTO } from '../category/models/category.model';
+import { getPaging } from '../../utils/paging';
+import { getCategorySearchable } from '../category/searchable';
+import { create, update } from 'lodash';
 
 class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
@@ -17,50 +20,24 @@ class CategoryController {
 		}
 	}
 
-	// async findAll(req: IReqUser, res: Response) {
-	// 	const {
-	// 		page = 1,
-	// 		limit = 10,
-	// 		search,
-	// 	} = req.query as unknown as IPaginationQuery;
-	// 	try {
-	// 		const query = {};
+	async findAll(req: IReqUser, res: Response) {
+		try {
+			const { query } = req;
+			const paging = getPaging(query, getCategorySearchable());
 
-	// 		if (search) {
-	// 			Object.assign(query, {
-	// 				$or: [
-	// 					{
-	// 						name: { $regex: search, $options: 'i' },
-	// 					},
-	// 					{
-	// 						description: { $regex: search, $options: 'i' },
-	// 					},
-	// 				],
-	// 			});
-	// 		}
+			const categories = await this.categoryService.findAll(paging);
 
-	// 		const result = await this.categoryService.findAll(
-	// 			query,
-	// 			+limit,
-	// 			+page,
-	// 			search
-	// 		);
-	// 		const count = await this.categoryService.count(query);
-
-	// 		return response.pagination(
-	// 			res,
-	// 			result,
-	// 			{
-	// 				total: count,
-	// 				totalPages: Math.ceil(count / limit),
-	// 				current: page,
-	// 			},
-	// 			'Success find all category'
-	// 		);
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed find all category');
-	// 	}
-	// }
+			return response.pagination(
+				res,
+				categories.rows,
+				Number(categories.count),
+				paging,
+				'Success find all category'
+			);
+		} catch (error) {
+			return response.error(res, error, 'Failed find all category');
+		}
+	}
 
 	// async findOne(req: IReqUser, res: Response) {
 	// 	try {
@@ -116,6 +93,16 @@ class CategoryController {
 	// 		return response.error(res, error, 'Failed remove category');
 	// 	}
 	// }
+}
+
+function toCategoryContract(data: any) {
+	return {
+		categoryId: data.categoryId,
+		name: data.name,
+		isActive: data.isActive,
+		createdAt: data.createdAt,
+		updatedAt: data.updatedAt,
+	};
 }
 
 export default CategoryController;

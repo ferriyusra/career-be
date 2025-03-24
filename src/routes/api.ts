@@ -81,11 +81,11 @@ export class ApiRouter {
           }
           */
 		);
-		// this.router.get(
-		// 	'/category',
-		// 	(req: IReqUser, res: Response, _next: NextFunction) =>
-		// 		this.categoryController.findAll(req, res)
-		// );
+		this.router.get(
+			'/category',
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.categoryController.findAll(req, res)
+		);
 		// this.router.get(
 		// 	'/category/:id',
 		// 	(req: IReqUser, res: Response, _next: NextFunction) =>

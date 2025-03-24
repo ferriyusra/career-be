@@ -1,7 +1,7 @@
 import { camelToSnakeCase } from './string';
 import { QUERY_LIMIT_DEFAULT, QUERY_SORT_DEFAULT } from './env';
 
-export function getPaging(query: any, searchables: any) {
+export function getPaging(query: any, searchables?: any) {
 	const { page: pageOri, perPage, sort: sortOri, ...q } = query;
 
 	// set page

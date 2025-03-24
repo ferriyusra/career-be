@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 class CategoryRepository {
@@ -47,49 +47,49 @@ class CategoryRepository {
 
 	async findAll(paging: any) {
 		const skip = (paging.page - 1) * paging.limit;
-
 		const filters: any = [];
 
 		if (paging.search) {
 			Object.keys(paging.search).forEach((key) => {
-				if (typeof paging.search[key] !== 'object') {
-					filters.push({
-						[key]: {
-							equals: paging.search[key],
-						},
-					});
-				} else if (paging.search[key].like) {
-					filters.push({
-						[key]: {
-							contains: paging.search[key].like,
-						},
-					});
+				const value = paging.search[key];
+				if (typeof value !== 'object') {
+					filters.push({ [key]: { equals: value } });
+				} else if (value.like) {
+					filters.push({ [key]: { contains: value.like } });
 				}
 			});
 		}
 
-		let categories;
+		let orderBy = {};
 		if (paging.sort) {
-			const sortField = paging.sort.split(' ')[0];
-			const sortOrder = paging.sort.split(' ')[1];
-
-			categories = await this.db.job_categories.findMany({
-				take: paging.limit,
-				skip: skip,
-				orderBy: {
-					[sortField]: sortOrder === 'desc' ? 'desc' : 'asc',
-				},
-			});
+			const [sortField, sortOrder] = paging.sort.split(' ');
+			orderBy = { [sortField]: sortOrder === 'desc' ? 'desc' : 'asc' };
 		}
+
+		const categories = await this.db.job_categories.findMany({
+			// select: {
+			// 	category_id: true,
+			// 	name: true,
+			// 	is_active: true,
+			// 	created_at: true,
+			// 	updated_at: true,
+			// },
+			take: paging.limit,
+			skip: skip,
+			where: {
+				AND: filters.length > 0 ? filters : undefined,
+			},
+			orderBy,
+		});
 
 		const totalItems = await this.db.job_categories.count({
 			where: {
-				AND: [...filters],
+				AND: filters.length > 0 ? filters : undefined,
 			},
 		});
 
 		return {
-			rows: categories?.map((category) => toDto(category)),
+			rows: categories.map((category) => toDto(category)),
 			count: totalItems,
 		};
 	}
