@@ -82,16 +82,26 @@ export default {
 	pagination(
 		res: Response,
 		data: any[],
-		pagination: Pagination,
+		total: number,
+		paging: { page: number; limit: number },
 		message: string
 	) {
+		const previousPage = paging.page - 1;
+		const leftover = total / (paging.page * paging.limit);
+
 		res.status(HttpStatusCode.Ok).json({
 			meta: {
 				status: HttpStatusCode.Ok,
 				message,
 			},
 			data,
-			pagination,
+			pagination: {
+				currentPage: paging.page,
+				previousPage: previousPage || null,
+				nextPage: leftover <= 1 ? null : paging.page + 1,
+				total,
+				perPage: paging.limit,
+			},
 		});
 	},
 };
