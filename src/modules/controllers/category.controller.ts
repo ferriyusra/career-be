@@ -39,60 +39,51 @@ class CategoryController {
 		}
 	}
 
-	// async findOne(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { id } = req.params;
-	// 		if (!isValidObjectId(id)) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+	async findOne(req: IReqUser, res: Response) {
+		try {
+			const { id } = req.params;
 
-	// 		const result = await this.categoryService.findById(id);
+			const result = await this.categoryService.findById(id);
 
-	// 		if (!result) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+			if (!result) {
+				return response.notfound(res, 'Category not found');
+			}
 
-	// 		return response.success(res, result, 'Success find one category');
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed find one category');
-	// 	}
-	// }
+			return response.success(res, result, 'Success find one category');
+		} catch (error) {
+			return response.error(res, error, 'Failed find one category');
+		}
+	}
 
-	// async update(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { id } = req.params;
-	// 		if (!isValidObjectId(id)) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+	async update(req: IReqUser, res: Response) {
+		try {
+			const { id } = req.params;
 
-	// 		const result = await this.categoryService.update(id, req.body);
-	// 		if (!result) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+			const result = await this.categoryService.update(id, req.body);
+			if (!result) {
+				return response.notfound(res, 'Category not found');
+			}
 
-	// 		return response.success(res, result, 'Success update category');
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed update category');
-	// 	}
-	// }
+			return response.success(res, result, 'Success update category');
+		} catch (error) {
+			return response.error(res, error, 'Failed update category');
+		}
+	}
 
-	// async remove(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { id } = req.params;
-	// 		if (!isValidObjectId(id)) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+	async remove(req: IReqUser, res: Response) {
+		try {
+			const { id } = req.params;
 
-	// 		const result = await this.categoryService.remove(id);
-	// 		if (!result) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+			const result = await this.categoryService.remove(id);
+			if (!result) {
+				return response.notfound(res, 'Category not found');
+			}
 
-	// 		return response.success(res, result, 'Success remove category');
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed remove category');
-	// 	}
-	// }
+			return response.success(res, result, 'Success remove category');
+		} catch (error) {
+			return response.error(res, error, 'Failed remove category');
+		}
+	}
 }
 
 function toCategoryContract(data: any) {

@@ -86,23 +86,23 @@ export class ApiRouter {
 			(req: IReqUser, res: Response, _next: NextFunction) =>
 				this.categoryController.findAll(req, res)
 		);
-		// this.router.get(
-		// 	'/category/:id',
-		// 	(req: IReqUser, res: Response, _next: NextFunction) =>
-		// 		this.categoryController.findOne(req, res)
-		// );
-		// this.router.put(
-		// 	'/category/:id',
-		// 	[authMiddleware, aclMiddleware([ROLES.ADMIN])],
-		// 	(req: IReqUser, res: Response, _next: NextFunction) =>
-		// 		this.categoryController.update(req, res)
-		// );
-		// this.router.delete(
-		// 	'/category/:id',
-		// 	[authMiddleware, aclMiddleware([ROLES.ADMIN])],
-		// 	(req: IReqUser, res: Response, _next: NextFunction) =>
-		// 		this.categoryController.remove(req, res)
-		// );
+		this.router.get(
+			'/category/:id',
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.categoryController.findOne(req, res)
+		);
+		this.router.put(
+			'/category/:id',
+			[authMiddleware, aclMiddleware([ROLES.ADMIN])],
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.categoryController.update(req, res)
+		);
+		this.router.delete(
+			'/category/:id',
+			[authMiddleware, aclMiddleware([ROLES.ADMIN])],
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.categoryController.remove(req, res)
+		);
 
 		// Media Route
 		this.router.post(
