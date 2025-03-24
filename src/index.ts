@@ -16,6 +16,9 @@ import {
 	createCategoryController,
 	createCategoryRepository,
 	createCategoryService,
+	createJobRepository,
+	createJobService,
+	createJobController,
 	createMediaController,
 	createMediaService,
 } from './modules';
@@ -87,21 +90,29 @@ async function main() {
 	logger.info('Initializing dependencies');
 	const authRepository = createAuthRepository(db);
 	const categoryRepository = createCategoryRepository(db);
+	const jobRepository = createJobRepository(db);
 
 	const authService = createAuthService(authRepository);
 	const categoryService = createCategoryService(categoryRepository);
+	const jobService = createJobService(jobRepository);
 
 	const mediaService = createMediaService(new CloudinaryUploader());
 
 	const authController = createAuthController(authService);
 	const categoryController = createCategoryController(categoryService);
+	const JobController = createJobController(jobService);
 	const mediaController = createMediaController(mediaService);
 
 	// Initialize routes
 	logger.info('Initializing routes');
 	app.use(
 		'/api',
-		apiRouter(authController, categoryController, mediaController)
+		apiRouter(
+			authController,
+			categoryController,
+			JobController,
+			mediaController
+		)
 	);
 
 	// Initialize API documentation

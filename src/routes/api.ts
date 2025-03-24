@@ -10,21 +10,25 @@ import { ROLES } from '../utils/constant';
 import { IReqUser } from '../utils/interfaces';
 import { MediaController } from '../modules/controllers/media.controller';
 import CategoryController from '../modules/controllers/category.controller';
+import JobController from '../modules/controllers/job.controller';
 
 export class ApiRouter {
 	private router: Router;
 	private authController: AuthController;
 	private categoryController: CategoryController;
+	private jobController: JobController;
 	private mediaController: MediaController;
 
 	constructor(
 		authController: AuthController,
 		categoryController: CategoryController,
+		jobController: JobController,
 		mediaController: MediaController
 	) {
 		this.router = express.Router();
 		this.authController = authController;
 		this.categoryController = categoryController;
+		this.jobController = jobController;
 		this.mediaController = mediaController;
 		this.initializeRoutes();
 	}
@@ -127,6 +131,13 @@ export class ApiRouter {
 			(req: IReqUser, res: Response, _next: NextFunction) =>
 				this.mediaController.remove(req, res)
 		);
+
+		this.router.post(
+			'/job',
+			[authMiddleware, aclMiddleware([ROLES.ADMIN])],
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.jobController.create(req, res)
+		);
 	}
 
 	public getRouter(): Router {
@@ -137,11 +148,13 @@ export class ApiRouter {
 export default (
 	authController: AuthController,
 	categoryController: CategoryController,
+	jobController: JobController,
 	mediaController: MediaController
 ): Router => {
 	return new ApiRouter(
 		authController,
 		categoryController,
+		jobController,
 		mediaController
 	).getRouter();
 };

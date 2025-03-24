@@ -77,7 +77,7 @@ model job_categories {
 
 model jobs {
   id            Int      @id @default(autoincrement())
-  job_id        String   @db.Uuid
+  job_id        String   @unique @db.Uuid
   title         String   @db.Text
   description   String   @db.Text
   employee_type String   @db.Text
