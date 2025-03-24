@@ -1,11 +1,10 @@
 import response from '../../utils/response';
 import { Response } from 'express';
-import { IPaginationQuery, IReqUser } from '../../utils/interfaces';
+import { IReqUser } from '../../utils/interfaces';
 import CategoryService from '../category/service';
 import { categoryDTO } from '../category/models/category.model';
 import { getPaging } from '../../utils/paging';
 import { getCategorySearchable } from '../category/searchable';
-import { create, update } from 'lodash';
 
 class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
