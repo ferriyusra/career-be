@@ -2,9 +2,9 @@ import response from '../../utils/response';
 import { Response } from 'express';
 import { IReqUser } from '../../utils/interfaces';
 import { getPaging } from '../../utils/paging';
-import { getCategorySearchable } from '../category/searchable';
-import { jobDTO } from '../job/models/job.models';
 import JobService from '../job/service';
+import { jobDTO } from '../job/validation';
+import { getJobSearchable } from '../job/searchable';
 
 class JobController {
 	constructor(private readonly jobService: JobService) {}
@@ -15,85 +15,74 @@ class JobController {
 			const result = await this.jobService.create(req.body);
 			return response.success(res, result, 'Success create job');
 		} catch (error) {
-			console.log(error);
 			return response.error(res, error, 'Failed create job');
 		}
 	}
 
-	// async findAll(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { query } = req;
-	// 		const paging = getPaging(query, getCategorySearchable());
+	async findAll(req: IReqUser, res: Response) {
+		try {
+			const { query } = req;
+			const paging = getPaging(query, getJobSearchable());
 
-	// 		const categories = await this.categoryService.findAll(paging);
+			const data = await this.jobService.findAll(paging);
 
-	// 		return response.pagination(
-	// 			res,
-	// 			categories.rows,
-	// 			Number(categories.count),
-	// 			paging,
-	// 			'Success find all category'
-	// 		);
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed find all category');
-	// 	}
-	// }
+			return response.pagination(
+				res,
+				data.rows,
+				Number(data.count),
+				paging,
+				'Success find all job'
+			);
+		} catch (error) {
+			return response.error(res, error, 'Failed find all job');
+		}
+	}
 
-	// async findOne(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { id } = req.params;
+	async findOne(req: IReqUser, res: Response) {
+		try {
+			const { id } = req.params;
 
-	// 		const result = await this.categoryService.findById(id);
+			const result = await this.jobService.findById(id);
 
-	// 		if (!result) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+			if (!result) {
+				return response.notfound(res, 'Job not found');
+			}
 
-	// 		return response.success(res, result, 'Success find one category');
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed find one category');
-	// 	}
-	// }
+			return response.success(res, result, 'Success find one job');
+		} catch (error) {
+			return response.error(res, error, 'Failed find one job');
+		}
+	}
 
-	// async update(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { id } = req.params;
+	async update(req: IReqUser, res: Response) {
+		try {
+			const { id } = req.params;
 
-	// 		const result = await this.categoryService.update(id, req.body);
-	// 		if (!result) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+			const result = await this.jobService.update(id, req.body);
+			if (!result) {
+				return response.notfound(res, 'Job not found');
+			}
 
-	// 		return response.success(res, result, 'Success update category');
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed update category');
-	// 	}
-	// }
+			return response.success(res, result, 'Success update job');
+		} catch (error) {
+			return response.error(res, error, 'Failed update job');
+		}
+	}
 
-	// async remove(req: IReqUser, res: Response) {
-	// 	try {
-	// 		const { id } = req.params;
+	async remove(req: IReqUser, res: Response) {
+		try {
+			const { id } = req.params;
 
-	// 		const result = await this.categoryService.remove(id);
-	// 		if (!result) {
-	// 			return response.notfound(res, 'Category not found');
-	// 		}
+			const result = await this.jobService.remove(id);
+			if (!result) {
+				return response.notfound(res, 'Job not found');
+			}
 
-	// 		return response.success(res, result, 'Success remove category');
-	// 	} catch (error) {
-	// 		return response.error(res, error, 'Failed remove category');
-	// 	}
-	// }
-}
-
-function toCategoryContract(data: any) {
-	return {
-		categoryId: data.categoryId,
-		name: data.name,
-		isActive: data.isActive,
-		createdAt: data.createdAt,
-		updatedAt: data.updatedAt,
-	};
+			return response.success(res, result, 'Success remove job');
+		} catch (error) {
+			return response.error(res, error, 'Failed remove job');
+		}
+	}
 }
 
 export default JobController;

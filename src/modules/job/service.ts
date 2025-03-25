@@ -1,13 +1,14 @@
+import { IJobCreate, IJobUpdate } from './interface';
 import JobRepository from './repository';
 
 class JobService {
 	constructor(private readonly jobRepository: JobRepository) {}
 
-	async create(data: any) {
+	async create(data: IJobCreate) {
 		return this.jobRepository.create(data);
 	}
 
-	async update(jobId: string, data: any) {
+	async update(jobId: string, data: IJobUpdate) {
 		return this.jobRepository.update(jobId, data);
 	}
 

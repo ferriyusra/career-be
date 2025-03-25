@@ -138,6 +138,28 @@ export class ApiRouter {
 			(req: IReqUser, res: Response, _next: NextFunction) =>
 				this.jobController.create(req, res)
 		);
+		this.router.put(
+			'/job/:id',
+			[authMiddleware, aclMiddleware([ROLES.ADMIN])],
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.jobController.update(req, res)
+		);
+		this.router.get(
+			'/job',
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.jobController.findAll(req, res)
+		);
+		this.router.get(
+			'/job/:id',
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.jobController.findOne(req, res)
+		);
+		this.router.delete(
+			'/job/:id',
+			[authMiddleware, aclMiddleware([ROLES.ADMIN])],
+			(req: IReqUser, res: Response, _next: NextFunction) =>
+				this.jobController.remove(req, res)
+		);
 	}
 
 	public getRouter(): Router {
