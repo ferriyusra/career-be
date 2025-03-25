@@ -5,6 +5,7 @@ import { getPaging } from '../../utils/paging';
 import JobService from '../job/service';
 import { jobDTO } from '../job/validation';
 import { getJobSearchable } from '../job/searchable';
+import { IJobResponse } from '../job/interface';
 
 class JobController {
 	constructor(private readonly jobService: JobService) {}
@@ -26,9 +27,11 @@ class JobController {
 
 			const data = await this.jobService.findAll(paging);
 
+			const rows = data.rows.map((item) => toJobContract(item));
+
 			return response.pagination(
 				res,
-				data.rows,
+				rows,
 				Number(data.count),
 				paging,
 				'Success find all job'
@@ -83,6 +86,20 @@ class JobController {
 			return response.error(res, error, 'Failed remove job');
 		}
 	}
+}
+
+function toJobContract(data: any): IJobResponse {
+	return {
+		id: data.id,
+		title: data.title,
+		description: data.description,
+		employeeType: data.employeeType,
+		category: data.category.name,
+		isActive: data.isActive,
+		deadline: data.deadline,
+		createdAt: data.createdAt,
+		updatedAt: data.updatedAt,
+	};
 }
 
 export default JobController;

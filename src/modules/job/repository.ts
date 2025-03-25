@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
+import { IJobCreate, IJobUpdate, IJobEntity } from './interface';
 
 class JobRepository {
 	private db: PrismaClient;
@@ -8,7 +9,7 @@ class JobRepository {
 		this.db = dbClient;
 	}
 
-	async create(data: any) {
+	async create(data: IJobCreate) {
 		const create = await this.db.jobs.create({
 			data: {
 				job_id: uuidv4(),
@@ -24,11 +25,10 @@ class JobRepository {
 		return toDto(create);
 	}
 
-	async update(jobId: string, data: any) {
+	async update(jobId: string, data: IJobUpdate) {
 		const updated = await this.db.jobs.update({
 			where: { job_id: jobId },
 			data: {
-				job_id: uuidv4(),
 				title: data.title,
 				description: data.description,
 				employee_type: data.employeeType,
@@ -48,10 +48,23 @@ class JobRepository {
 	}
 
 	async findById(jobId: string) {
-		const data = await this.db.jobs.findFirst({
-			where: { job_id: jobId },
-		});
-		return toDto(data);
+		const data = await this.db.$queryRaw<IJobEntity>(Prisma.sql`
+			SELECT 
+				jobs.job_id, 
+				jobs.title, 
+				jobs.description, 
+				jobs.deadline, 
+				jobs.employee_type, 
+				job_categories.name AS category_name, 
+				jobs.is_active, 
+				jobs.created_at, 
+				jobs.updated_at
+			FROM jobs
+			LEFT JOIN job_categories ON jobs.category_id = job_categories.category_id
+			WHERE jobs.job_id = ${jobId}
+			;
+		`);
+		return data ? toDto(data) : null;
 	}
 
 	async findAll(paging: any) {
@@ -82,6 +95,13 @@ class JobRepository {
 				AND: filters.length > 0 ? filters : undefined,
 			},
 			orderBy,
+			include: {
+				job_category: {
+					select: {
+						name: true,
+					},
+				},
+			},
 		});
 
 		const totalItems = await this.db.jobs.count({
@@ -97,15 +117,15 @@ class JobRepository {
 	}
 }
 
-function toDto(data: any) {
+function toDto(data: IJobEntity) {
 	return {
-		jobId: data.job_id,
+		id: data.job_id,
 		title: data.title,
 		description: data.description,
-		employeeType: data.employeeType,
-		category_id: data.categoryId,
+		employeeType: data.employee_type,
 		isActive: data.is_active,
 		deadline: data.deadline,
+		category: data.job_category,
 		createdAt: data.created_at,
 		updatedAt: data.updated_at,
 	};
