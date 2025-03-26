@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
+import { ICategoryEntity } from './interface';
 
 class CategoryRepository {
 	private db: PrismaClient;
@@ -42,7 +43,7 @@ class CategoryRepository {
 		const data = await this.db.job_categories.findFirst({
 			where: { category_id: categoryId },
 		});
-		return toDto(data);
+		return data ? toDto(data) : null;
 	}
 
 	async findAll(paging: any) {
@@ -67,13 +68,6 @@ class CategoryRepository {
 		}
 
 		const categories = await this.db.job_categories.findMany({
-			// select: {
-			// 	category_id: true,
-			// 	name: true,
-			// 	is_active: true,
-			// 	created_at: true,
-			// 	updated_at: true,
-			// },
 			take: paging.limit,
 			skip: skip,
 			where: {
@@ -95,7 +89,7 @@ class CategoryRepository {
 	}
 }
 
-function toDto(data: any) {
+function toDto(data: ICategoryEntity) {
 	return {
 		categoryId: data.category_id,
 		name: data.name,

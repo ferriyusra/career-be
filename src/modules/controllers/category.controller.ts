@@ -2,9 +2,9 @@ import response from '../../utils/response';
 import { Response } from 'express';
 import { IReqUser } from '../../utils/interfaces';
 import CategoryService from '../category/service';
-import { categoryDTO } from '../category/models/category.model';
 import { getPaging } from '../../utils/paging';
 import { getCategorySearchable } from '../category/searchable';
+import { categoryDTO } from '../category/validation';
 
 class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
@@ -83,16 +83,6 @@ class CategoryController {
 			return response.error(res, error, 'Failed remove category');
 		}
 	}
-}
-
-function toCategoryContract(data: any) {
-	return {
-		categoryId: data.categoryId,
-		name: data.name,
-		isActive: data.isActive,
-		createdAt: data.createdAt,
-		updatedAt: data.updatedAt,
-	};
 }
 
 export default CategoryController;
